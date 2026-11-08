@@ -1,0 +1,19 @@
+# Secrets: never commit these
+.env
+.gitlab-ci-local-variables.yml
+
+# Dependencies and caches
+node_modules/
+__pycache__/
+.pytest_cache/
+venv/
+
+# Test output (created on every run)
+playwright-report/
+test-results/
+blob-report/
+playwright/.auth/
+reports/
+.gitlab-ci-local/
+
+*.mp4

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QA Automation Project – Short Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ground:#2B1E4A; --main:#F28AB2; --ink:#F5F0FA; --accent:#7FD1C7;
+  --panel:color-mix(in srgb, var(--ground) 90%, var(--ink));
+  --panel-2:color-mix(in srgb, var(--ground) 80%, var(--ink));
+  --soft:color-mix(in srgb, var(--ink) 70%, var(--ground));
+  --faint:color-mix(in srgb, var(--ink) 45%, var(--ground));
+  --display:"Sora", "Segoe UI", system-ui, sans-serif;
+  --sans:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top, 0px);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  color-scheme:dark;
+}
+/* The deck keeps its plum palette in both light and dark mode */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ground:#2B1E4A; --ink:#F5F0FA; } }
+:root[data-theme="dark"] { --ground:#2B1E4A; --ink:#F5F0FA; }
+html { scroll-padding-top:env(safe-area-inset-top, 0px); }
+html, body { height:100%; margin:0; }
+body { background:var(--ground); color:var(--ink); font-family:var(--sans); overflow:hidden; cursor:default; }
+body.idle { cursor:none; }
+#view { position:fixed; inset:0; }
+#stage { position:absolute; left:0; top:0; width:1920px; height:1080px; transform-origin:0 0; overflow:hidden; background:var(--ground); }
+
+/* Slides and builds */
+.slide { position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .45s ease, visibility 0s linear .45s; }
+.slide.on { opacity:1; visibility:visible; transition:opacity .45s ease; }
+[data-b] { opacity:0; transform:translateY(26px); transition:opacity .5s cubic-bezier(.2,.7,.2,1) var(--d,0s), transform .6s cubic-bezier(.2,.7,.2,1) var(--d,0s); }
+[data-b].in { opacity:1; transform:none; }
+[data-b].from-right { transform:translateX(44px); }
+[data-b].pop { transform:scale(.82); transition-timing-function:cubic-bezier(.34,1.56,.64,1); }
+[data-b].fade { transform:none; }
+[data-b].from-right.in, [data-b].pop.in { transform:none; }
+svg [data-b] { transform-box:fill-box; transform-origin:center; }
+[data-b].draw, [data-b].knee { transform:none; }
+.draw { stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 1.1s cubic-bezier(.65,0,.35,1) var(--d,0s), opacity .3s var(--d,0s); }
+.draw.in { stroke-dashoffset:0; }
+.instant, .instant * { transition:none !important; }
+
+/* Shared pieces */
+.abs { position:absolute; }
+.col { display:flex; flex-direction:column; }
+.row { display:flex; align-items:center; }
+.kicker { font-family:var(--mono); font-size:26px; color:var(--accent); margin:0; }
+.h1 { font-family:var(--display); font-weight:700; font-size:150px; line-height:1; margin:0; letter-spacing:-.02em; }
+.h2 { font-family:var(--display); font-weight:700; font-size:84px; line-height:1.05; margin:0; letter-spacing:-.01em; }
+.h3 { font-family:var(--display); font-weight:700; font-size:42px; line-height:1.15; margin:0; }
+.sub { font-size:36px; line-height:1.3; color:var(--soft); margin:0; }
+.body { font-size:32px; line-height:1.35; margin:0; }
+.label { font-size:28px; color:var(--soft); }
+.mono { font-family:var(--mono); }
+.ok { color:var(--accent); } .hot { color:var(--main); } .dim { color:var(--faint); }
+.num { font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:120px; line-height:1; font-weight:700; }
+.panel { background:var(--panel); border-radius:22px; box-shadow:0 30px 60px rgba(0,0,0,.25); }
+.chip { display:inline-block; padding:10px 24px; border-radius:999px; border:2px solid var(--accent); color:var(--accent); font-family:var(--mono); font-size:28px; }
+.chip.hot { border-color:var(--main); color:var(--main); }
+.win { position:absolute; border-radius:18px; overflow:hidden; background:var(--panel); box-shadow:0 30px 60px rgba(0,0,0,.25); }
+.win-bar { height:54px; display:flex; align-items:center; gap:12px; padding:0 24px; background:var(--panel-2); font-family:var(--mono); font-size:22px; color:var(--soft); }
+.win-bar i { width:14px; height:14px; border-radius:50%; background:color-mix(in srgb, var(--ink) 28%, transparent); }
+.win-bar span { margin-left:14px; }
+.win-body { padding:30px 36px; font-family:var(--mono); font-size:28px; line-height:1.7; white-space:normal; }
+.win-body div:not(:has(div)) { white-space:pre; }
+.breathe { animation:breathe 3.4s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+@keyframes breathe { 50% { transform:scale(1.03); } }
+.spin { animation:spin 40s linear infinite; transform-box:fill-box; transform-origin:center; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Progress path, top left */
+#prog { position:absolute; left:120px; top:64px; display:flex; align-items:center; gap:18px; font-family:var(--mono); font-size:22px; color:var(--faint); transition:opacity .4s; z-index:5; }
+#prog .p { display:flex; align-items:center; gap:10px; transition:color .4s; }
+#prog .p i { width:16px; height:16px; border-radius:50%; border:2px solid currentColor; transition:background .4s; }
+#prog .p.on { color:var(--main); } #prog .p.on i { background:var(--main); }
+#prog .rule { width:56px; height:2px; background:color-mix(in srgb, var(--ink) 25%, transparent); }
+#count { position:absolute; right:120px; bottom:56px; font-family:var(--mono); font-size:22px; color:var(--faint); z-index:5; }
+
+/* Speaker notes (N) */
+#notes { position:fixed; left:50%; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); width:min(92vw, 1100px); background:var(--panel-2); color:var(--ink); border-radius:14px; padding:16px 22px; font-size:17px; line-height:1.5; display:none; z-index:20; box-shadow:0 12px 30px rgba(0,0,0,.35); }
+#notes.show { display:block; }
+#notes b { color:var(--accent); font-weight:600; }
+#help { position:fixed; right:calc(16px + env(safe-area-inset-right, 0px)); top:calc(16px + env(safe-area-inset-top, 0px)); font-family:var(--mono); font-size:13px; color:var(--faint); background:var(--panel); padding:8px 12px; border-radius:10px; z-index:20; transition:opacity .6s; }
+#help.gone { opacity:0; }
+
+/* Slide-specific */
+.bar-seg { border-radius:12px; transform-origin:0 50%; transform:scaleX(0); transition:transform .9s cubic-bezier(.65,0,.35,1) var(--d,0s); }
+.in .bar-seg, .bar-seg.in { transform:scaleX(1); }
+.focus-dim { transition:opacity .5s, transform .5s, outline-color .5s; outline:4px solid transparent; outline-offset:-2px; }
+.focused .focus-dim:not(.focus-me) { opacity:.4; }
+.focused .focus-me { transform:scale(1.06); outline-color:var(--main); }
+.gf-grow { transition:transform .8s cubic-bezier(.65,0,.35,1) 1.3s; transform-box:fill-box; transform-origin:center; }
+.gf-gone { transition:opacity .8s ease 2.7s; }
+.gf-on .gf-grow { transform:scale(1.3); }
+.gf-on .gf-gone { opacity:0; }
+.knee { opacity:0; transition:opacity .6s; }
+.knee.in { opacity:1; }
+.vbar { transform-origin:50% 100%; transform:scaleY(0); transition:transform .9s cubic-bezier(.65,0,.35,1) var(--d,0s), opacity .3s var(--d,0s); }
+.vbar.in { transform:scaleY(1); }
+.card-t { font-family:var(--display); font-weight:700; font-size:34px; line-height:1.15; }
+.card-b { font-size:26px; line-height:1.4; color:var(--soft); }
+.hl { position:absolute; left:-14px; right:-14px; top:2px; bottom:2px; border-radius:8px; background:color-mix(in srgb, var(--main) 24%, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-b], .draw, .bar-seg, .slide, .gf-grow, .gf-gone { transition-duration:.01s !important; transition-delay:0s !important; }
+  .breathe, .spin { animation:none; }
+}
+</style>
+</head>
+<body>
+<div id="view"><div id="stage">
+
+<div id="prog">
+  <span class="p" data-p="0"><i></i>UI</span><span class="rule"></span>
+  <span class="p" data-p="1"><i></i>API</span><span class="rule"></span>
+  <span class="p" data-p="2"><i></i>CI</span><span class="rule"></span>
+  <span class="p" data-p="3"><i></i>Load</span>
+</div>
+<div id="count"></div>
+
+<!-- 1. Title -->
+<section class="slide" id="title" data-prog="">
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <g class="breathe"><circle cx="1460" cy="430" r="210" style="fill:none;stroke:var(--main);stroke-width:14px" stroke-dasharray="60 26" class="spin"/></g>
+    <circle class="breathe" cx="1460" cy="430" r="62" style="fill:var(--main)"/>
+  </svg>
+  <div class="abs col" style="left:160px;top:250px;width:1100px;gap:24px">
+    <p class="kicker">QA Automation Engineer</p>
+    <h1 class="h1">Duha Jarrar</h1>
+    <p class="sub">QA automation project: UI, API, and load testing</p>
+  </div>
+  <div class="abs row" style="left:160px;top:660px;gap:22px">
+    <span class="chip pop" data-b="1" data-snd="pop" style="--d:0s">UI tests</span>
+    <span class="chip pop" data-b="1" style="--d:.15s">API tests</span>
+    <span class="chip pop" data-b="1" style="--d:.3s">Load test</span>
+  </div>
+</section>
+
+<!-- 2. The path -->
+<section class="slide" id="path" data-prog="">
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <line x1="300" y1="400" x2="1620" y2="400" style="stroke:var(--ink);stroke-opacity:.15;stroke-width:6px"/>
+    <line class="draw" data-b="2" pathLength="1" x1="300" y1="400" x2="740" y2="400" style="stroke:var(--main);stroke-width:10px;stroke-linecap:round"/>
+    <line class="draw" data-b="3" pathLength="1" x1="740" y1="400" x2="1180" y2="400" style="stroke:var(--main);stroke-width:10px;stroke-linecap:round"/>
+    <line class="draw" data-b="4" pathLength="1" x1="1180" y1="400" x2="1620" y2="400" style="stroke:var(--main);stroke-width:10px;stroke-linecap:round"/>
+  </svg>
+  <div class="abs" style="inset:0">
+    <div class="abs col pop" data-b="1" data-snd="pop" style="left:200px;top:300px;width:200px;align-items:center"><svg width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="56" style="fill:var(--ground);stroke:var(--main);stroke-width:10px"/><circle cx="100" cy="100" r="22" style="fill:var(--main)"/></svg></div>
+    <div class="abs col pop" data-b="2" data-snd="pop" style="left:640px;top:300px;width:200px;align-items:center;--d:.9s"><svg width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="56" style="fill:var(--ground);stroke:var(--main);stroke-width:10px"/><circle cx="100" cy="100" r="22" style="fill:var(--main)"/></svg></div>
+    <div class="abs col pop" data-b="3" data-snd="pop" style="left:1080px;top:300px;width:200px;align-items:center;--d:.9s"><svg width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="56" style="fill:var(--ground);stroke:var(--accent);stroke-width:10px"/><circle cx="100" cy="100" r="22" style="fill:var(--accent)"/></svg></div>
+    <div class="abs col pop" data-b="4" data-snd="pop" style="left:1520px;top:300px;width:200px;align-items:center;--d:.9s"><svg width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="56" style="fill:var(--ground);stroke:var(--main);stroke-width:10px"/><circle cx="100" cy="100" r="22" style="fill:var(--main)"/></svg></div>
+    <div class="abs col" data-b="1" style="left:120px;top:520px;width:360px;align-items:center;text-align:center;gap:12px;--d:.2s"><p class="kicker">Part 1</p><h2 class="h3" style="font-size:52px">UI tests</h2><span class="chip" data-b="5" style="--d:0s">README</span></div>
+    <div class="abs col" data-b="2" style="left:560px;top:520px;width:360px;align-items:center;text-align:center;gap:12px;--d:1.1s"><p class="kicker">Part 2</p><h2 class="h3" style="font-size:52px">API tests</h2><span class="chip" data-b="5" style="--d:.15s">README</span></div>
+    <div class="abs col" data-b="3" style="left:1000px;top:520px;width:360px;align-items:center;text-align:center;gap:12px;--d:1.1s"><p class="kicker">Both suites</p><h2 class="h3" style="font-size:52px">CI pipeline</h2><span class="chip" data-b="5" style="--d:.3s">.gitlab-ci.yml</span></div>
+    <div class="abs col" data-b="4" style="left:1440px;top:520px;width:360px;align-items:center;text-align:center;gap:12px;--d:1.1s"><p class="kicker">Part 3</p><h2 class="h3" style="font-size:52px">Load test</h2><span class="chip" data-b="5" style="--d:.45s">README</span></div>
+  </div>
+</section>
+
+<!-- 3. UI scope -->
+<section class="slide" id="ui-scope" data-prog="0">
+  <div class="abs col" style="left:160px;top:220px;width:760px;gap:24px">
+    <p class="kicker">Part 1: UI automation</p>
+    <h2 class="h2">Toolshop demo site</h2>
+    <p class="sub">Playwright and TypeScript</p>
+  </div>
+  <div class="abs row" data-b="2" data-snd="ding" style="left:160px;top:600px;gap:24px;align-items:baseline"><span class="num" id="uis-num">36</span><span class="label">tests</span></div>
+  <div class="abs panel" style="left:1010px;top:190px;width:760px;height:520px">
+    <div class="abs row" style="left:56px;top:70px;gap:30px;font-size:40px"><svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" style="fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:3px"/><circle class="pop" data-b="1" data-snd="tick" cx="28" cy="28" r="25" style="fill:var(--accent);--d:0s"/><path class="draw" data-b="1" pathLength="1" d="M16 29 L25 38 L41 19" style="fill:none;stroke:var(--ground);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;--d:.1s"/></svg><span>Login</span></div>
+    <div class="abs row" style="left:56px;top:178px;gap:30px;font-size:40px"><svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" style="fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:3px"/><circle class="pop" data-b="1" data-snd-at="0.5:tick" cx="28" cy="28" r="25" style="fill:var(--accent);--d:.5s"/><path class="draw" data-b="1" pathLength="1" d="M16 29 L25 38 L41 19" style="fill:none;stroke:var(--ground);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;--d:.6s"/></svg><span>Search by three criteria</span></div>
+    <div class="abs row" style="left:56px;top:286px;gap:30px;font-size:40px"><svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" style="fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:3px"/><circle class="pop" data-b="1" data-snd-at="1:tick" cx="28" cy="28" r="25" style="fill:var(--accent);--d:1s"/><path class="draw" data-b="1" pathLength="1" d="M16 29 L25 38 L41 19" style="fill:none;stroke:var(--ground);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;--d:1.1s"/></svg><span>Cart</span></div>
+    <div class="abs row" style="left:56px;top:394px;gap:30px;font-size:40px"><svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" style="fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:3px"/><circle class="pop" data-b="1" data-snd-at="1.5:tick" cx="28" cy="28" r="25" style="fill:var(--accent);--d:1.5s"/><path class="draw" data-b="1" pathLength="1" d="M16 29 L25 38 L41 19" style="fill:none;stroke:var(--ground);stroke-width:5px;stroke-linecap:round;stroke-linejoin:round;--d:1.6s"/></svg><span>Checkout</span></div>
+  </div>
+</section>
+
+<!-- 4. Page objects and data -->
+<section class="slide" id="ui-code" data-prog="0">
+  <div class="win" id="uic-w1" style="left:160px;top:150px;width:1600px;height:700px;transition:opacity .5s, transform .5s">
+    <div class="win-bar"><i></i><i></i><i></i><span>pages/SearchPage.ts</span></div>
+    <div class="win-body" style="display:flex;gap:56px;padding:34px 40px">
+      <div style="width:330px;font-size:26px;line-height:2"><div class="dim">CartPage.ts</div><div class="dim">CheckoutPage.ts</div><div class="dim">InvoicesPage.ts</div><div class="dim">LoginPage.ts</div><div class="dim">MainPage.ts</div><div class="dim">ProductPage.ts</div><div class="ok">SearchPage.ts</div></div>
+      <div style="font-size:30px">
+        <div class="hot from-right" data-b="0" style="--d:.3s">export class SearchPage {</div>
+        <div class="from-right" data-b="0" style="--d:.6s">  async searchFor(keyword) { … }</div>
+        <div class="from-right" data-b="0" style="--d:.9s">  async filterByCategory(category) { … }</div>
+        <div class="from-right" data-b="0" style="--d:1.2s">  async filterByBrand(brand) { … }</div>
+        <div class="from-right" data-b="0" style="--d:1.5s">  async getProductNames() { … }</div>
+        <div class="hot from-right" data-b="0" style="--d:1.8s">}</div>
+      </div>
+    </div>
+  </div>
+  <div class="win" id="uic-w2" style="left:160px;top:150px;width:1600px;height:700px;opacity:0;transform:translateY(30px);transition:opacity .5s, transform .5s">
+    <div class="win-bar"><i></i><i></i><i></i><span>data/searchData.ts</span></div>
+    <div class="win-body" style="font-size:27px">
+      <div class="hot">export const searchCases = [</div>
+      <div class="from-right" data-b="1" data-snd="pop" style="--d:.4s">  { id: "TC-SEARCH-01", keyword: "pliers" },</div>
+      <div class="from-right" data-b="1" style="--d:.8s">  { id: "TC-SEARCH-02", category: "Hammer" },</div>
+      <div class="from-right" data-b="1" style="--d:1.2s">  { id: "TC-SEARCH-03", brand: "ForgeFlex Tools" },</div>
+      <div class="from-right" data-b="1" style="--d:1.6s">  { id: "TC-SEARCH-04", keyword: "pliers", brand: "MightyCraft Hardware" },</div>
+      <div class="ok fade" id="uic-typed" data-b="2"></div>
+      <div class="hot">];</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Fresh user -->
+<section class="slide" id="ui-user" data-prog="0">
+  <div class="win" style="left:160px;top:170px;width:1080px;height:380px">
+    <div class="win-bar"><i></i><i></i><i></i><span>terminal</span></div>
+    <div class="win-body" style="font-size:27px"><div id="uu-cmd"></div><div class="dim fade" id="uu-l1" data-b="9">Running 36 tests using 3 workers</div><div class="ok fade" id="uu-l2" data-b="9">✓ setup › create a test user, log in, and save the session</div></div>
+  </div>
+  <div class="abs panel row from-right" data-b="1" data-snd="pop" style="left:1310px;top:150px;width:450px;height:124px;padding:0 30px;box-sizing:border-box;gap:26px;--d:0s"><svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="26" r="14" style="fill:var(--main)"/><path d="M10 66 C12 46 58 46 60 66 Z" style="fill:var(--main)"/></svg><div class="col" style="gap:6px"><span class="kicker">Run 1</span><span style="font-size:32px">New test user</span></div></div>
+  <div class="abs panel row from-right" data-b="1" data-snd-at="0.7:pop" style="left:1310px;top:300px;width:450px;height:124px;padding:0 30px;box-sizing:border-box;gap:26px;--d:.7s"><svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="26" r="14" style="fill:var(--main)"/><path d="M10 66 C12 46 58 46 60 66 Z" style="fill:var(--main)"/></svg><div class="col" style="gap:6px"><span class="kicker">Run 2</span><span style="font-size:32px">New test user</span></div></div>
+  <div class="abs panel row from-right" data-b="1" data-snd-at="1.4:pop" style="left:1310px;top:450px;width:450px;height:124px;padding:0 30px;box-sizing:border-box;gap:26px;--d:1.4s"><svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="26" r="14" style="fill:var(--main)"/><path d="M10 66 C12 46 58 46 60 66 Z" style="fill:var(--main)"/></svg><div class="col" style="gap:6px"><span class="kicker">Run 3</span><span style="font-size:32px">New test user</span></div></div>
+</section>
+
+<!-- 6. Login run and report -->
+<section class="slide" id="ui-run" data-prog="0">
+  <div class="win" id="ur-win" style="left:160px;top:150px;width:1600px;height:600px;transition:opacity .5s, transform .5s">
+    <div class="win-bar"><i></i><i></i><i></i><span>tests/login.spec.ts</span></div>
+    <div class="win-body" id="ur-list" style="font-size:27px"></div>
+  </div>
+  <div class="abs" id="ur-rep" style="left:160px;top:180px;width:1600px;opacity:0;transform:translateY(30px);transition:opacity .5s, transform .5s">
+    <div class="col" style="gap:14px"><p class="kicker">HTML report</p><h2 class="h2" style="font-size:72px">Full run, all 36 tests</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:56px">
+      <div class="panel col pop" data-b="1" data-snd="ding" style="padding:40px 40px 34px;gap:14px;--d:.3s"><span class="num ok">36</span><span class="label">Passed</span></div>
+      <div class="panel col pop" data-b="1" style="padding:40px 40px 34px;gap:14px;--d:.45s"><span class="num">0</span><span class="label">Failed</span></div>
+      <div class="panel col pop" data-b="1" style="padding:40px 40px 34px;gap:14px;--d:.6s"><span class="num">0</span><span class="label">Flaky</span></div>
+      <div class="panel col pop" data-b="1" style="padding:40px 40px 34px;gap:14px;--d:.75s"><span class="num">0</span><span class="label">Skipped</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. UI bugs -->
+<section class="slide" id="ui-bugs" data-prog="0">
+  <div class="abs" id="ub-cards" style="inset:0">
+    <div class="abs panel col focus-dim" data-b="0" data-snd="pop" style="left:160px;top:200px;width:500px;height:470px;padding:44px 40px;box-sizing:border-box;gap:22px;--d:.1s"><span class="kicker hot">BUG-UI-001</span><span class="h3">The cart is lost in a new tab</span></div>
+    <div class="abs panel col focus-dim focus-me" data-b="0" style="left:710px;top:200px;width:500px;height:470px;padding:44px 40px;box-sizing:border-box;gap:22px;--d:.3s"><span class="kicker hot">BUG-UI-002</span><span class="h3">The order fails silently after the payment succeeds</span>
+      <div class="row" style="flex-wrap:wrap;gap:12px;margin-top:auto">
+        <span class="chip pop" data-b="2" data-snd="pop" style="font-size:24px;padding:8px 18px;--d:0s">Steps</span>
+        <span class="chip pop" data-b="2" style="font-size:24px;padding:8px 18px;--d:.2s">Expected</span>
+        <span class="chip pop" data-b="2" style="font-size:24px;padding:8px 18px;--d:.4s">Actual</span>
+        <span class="chip pop" data-b="2" style="font-size:24px;padding:8px 18px;--d:.6s">Video</span>
+      </div></div>
+    <div class="abs panel col focus-dim" data-b="0" style="left:1260px;top:200px;width:500px;height:470px;padding:44px 40px;box-sizing:border-box;gap:22px;--d:.5s"><span class="kicker hot">BUG-UI-003</span><span class="h3">Real billing addresses are rejected</span></div>
+  </div>
+  <p class="abs mono" data-b="3" data-snd="pop" style="left:160px;top:740px;width:1600px;text-align:center;font-size:30px;margin:0"><span class="dim">test.fail(true, </span><span class="ok">"BUG-UI-002: …"</span><span class="dim">)</span></p>
+</section>
+
+<!-- 5. Part 2: what we test -->
+<section class="slide" id="api-main" data-prog="1">
+  <div class="abs col" style="left:160px;top:180px;width:740px;gap:20px">
+    <p class="kicker">Part 2: API automation</p>
+    <h2 class="h2">Traccar</h2>
+    <p class="sub">A GPS tracking platform with a REST API</p>
+  </div>
+  <div class="abs col fade" data-b="1" style="left:160px;top:430px;width:740px;gap:16px;--d:.6s">
+    <p class="card-b" style="margin:0;font-size:30px">A <span class="hot">geofence</span> is an area on the map, sent as text:</p>
+    <div class="row" style="gap:14px"><span class="chip" style="font-size:22px">CIRCLE</span><span class="chip" style="font-size:22px">POLYGON</span><span class="chip" style="font-size:22px">LINESTRING</span></div>
+  </div>
+  <div class="abs panel" style="left:960px;top:160px;width:800px;height:580px;overflow:hidden" id="as-map">
+    <svg class="abs" viewBox="0 0 800 580" style="inset:0;width:100%;height:100%">
+      <g id="as-grid" style="stroke:var(--ink);stroke-opacity:.09;stroke-width:2px"></g>
+      <path d="M0 440 C180 390 260 490 420 440 S700 350 800 380" style="fill:none;stroke:var(--ink);stroke-opacity:.18;stroke-width:10px"/>
+      <g class="gf-gone"><g class="gf-grow">
+        <circle class="fade" data-b="2" cx="400" cy="270" r="140" style="fill:var(--main);fill-opacity:.22"/>
+        <circle class="draw" data-b="1" data-snd="pop" pathLength="1" cx="400" cy="270" r="140" style="fill:none;stroke:var(--main);stroke-width:8px"/>
+      </g>
+      <circle class="pop breathe" data-b="1" cx="400" cy="270" r="14" style="fill:var(--accent)"/></g>
+    </svg>
+    <p class="abs mono fade" data-b="1" style="left:36px;top:520px;font-size:22px;color:var(--accent);margin:0;--d:1s">CIRCLE (31.959 35.1823, 500)</p>
+  </div>
+  <div class="abs col" style="left:160px;top:620px;gap:20px">
+    <div class="row from-right" data-b="2" data-snd="click" style="gap:22px;--d:0s"><span class="chip" style="font-size:24px">POST /api/geofences</span><span class="label">created, read back ✓</span></div>
+    <div class="row from-right" data-b="2" data-snd-at="1.3:click" style="gap:22px;--d:1.3s"><span class="chip" style="font-size:24px">PUT /api/geofences/{id}</span><span class="label">updated, read back ✓</span></div>
+    <div class="row from-right" data-b="2" data-snd-at="2.7:click" style="gap:22px;--d:2.7s"><span class="chip" style="font-size:24px">DELETE /api/geofences/{id}</span><span class="label">deleted, read back ✓</span></div>
+  </div>
+</section>
+
+<!-- 6. Part 2: how it's built -->
+<section class="slide" id="api-built" data-prog="1">
+  <div class="abs col" style="left:160px;top:150px;width:1600px;gap:16px">
+    <p class="kicker">Part 2: How it’s built</p>
+    <h2 class="h2" style="font-size:64px">Python, pytest, and requests</h2>
+  </div>
+  <div class="win" style="left:160px;top:310px;width:900px;height:470px">
+    <div class="win-bar"><i></i><i></i><i></i><span>Part 2 - API automation testing/</span></div>
+    <div class="win-body" style="font-size:25px;line-height:1.95">
+      <div class="from-right" data-b="0" data-snd="pop" style="display:flex;--d:.2s"><span style="width:440px">├ api/traccar_api.py</span><span class="dim">one client, every call</span></div>
+      <div class="from-right" data-b="0" style="display:flex;--d:.45s"><span style="width:440px">├ data/geofence_data.py</span><span class="dim">test cases as rows</span></div>
+      <div class="from-right" data-b="0" style="display:flex;--d:.7s"><span style="width:440px">├ data/geofence_schema.py</span><span class="dim">response shape</span></div>
+      <div class="from-right" data-b="0" style="display:flex;--d:.95s"><span style="width:440px">├ tests/</span><span class="dim">create, update, delete</span></div>
+      <div class="from-right" data-b="0" style="display:flex;--d:1.2s"><span style="width:440px">├ conftest.py</span><span class="dim">fixtures</span></div>
+      <div class="from-right" data-b="0" style="display:flex;--d:1.45s"><span style="width:440px">└ .env</span><span class="dim">credentials, not committed</span></div>
+    </div>
+  </div>
+  <div class="abs col" style="left:1110px;top:310px;width:650px;gap:20px">
+    <div class="panel col from-right" data-b="1" data-snd="pop" style="padding:24px 32px;gap:6px"><span class="card-t" style="font-size:30px">One client class</span><span class="card-b">TraccarApi has login, create, get, update, and delete, like a page object for the API.</span></div>
+    <div class="panel col from-right" data-b="2" data-snd="pop" style="padding:24px 32px;gap:6px"><span class="card-t" style="font-size:30px">Data-driven</span><span class="card-b">Each case is one row, run with pytest’s parametrize.</span></div>
+    <div class="panel col from-right" data-b="3" data-snd="pop" style="padding:24px 32px;gap:6px"><span class="card-t" style="font-size:30px">Fixtures</span><span class="card-b">Log in once. Each test gets a fresh geofence, deleted after.</span></div>
+  </div>
+  <div class="abs row" style="left:160px;top:880px;gap:18px;font-family:var(--mono);font-size:26px">
+    <span class="kicker fade" data-b="4" style="--d:0s">Valid, invalid, and edge cases, 5 response codes:</span>
+    <span class="chip pop" data-b="4" data-snd="pop" style="--d:.2s">200</span><span class="chip pop" data-b="4" style="--d:.35s">204</span><span class="chip hot pop" data-b="4" style="--d:.5s">400</span><span class="chip hot pop" data-b="4" style="--d:.65s">401</span><span class="chip hot pop" data-b="4" style="--d:.8s">404</span>
+  </div>
+</section>
+
+<!-- 6. API bugs -->
+<section class="slide" id="api-bugs" data-prog="1">
+  <div class="abs col" style="left:160px;top:200px;width:700px;gap:40px">
+    <p class="kicker">Part 2: Results</p>
+    <div class="row" style="gap:70px;align-items:flex-start">
+      <div class="col" style="gap:12px"><span class="num" id="ab-n1">44</span><span class="label">tests</span></div>
+      <div class="col" style="gap:12px"><span class="num hot" id="ab-n2">7</span><span class="label">bugs found</span></div>
+    </div>
+  </div>
+  <div class="abs panel col from-right" data-b="1" data-snd="pop" style="left:160px;top:470px;width:820px;padding:36px 40px;box-sizing:border-box;gap:14px">
+    <span class="kicker hot">BUG-API-004, for example</span>
+    <span class="h3">Coordinates that don’t exist on Earth are accepted</span>
+  </div>
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <g class="pop" data-b="1" style="--d:.2s"><g class="breathe" id="ab-globe"></g></g>
+    <line class="draw" data-b="1" pathLength="1" x1="1400" y1="430" x2="1660" y2="150" style="stroke:var(--main);stroke-width:4px;--d:.7s"/>
+    <circle class="pop" data-b="1" data-snd-at="1.5:ding" cx="1660" cy="150" r="20" style="fill:var(--main);--d:1.5s"/>
+  </svg>
+  <div class="abs col fade" data-b="1" style="left:1150px;top:670px;width:500px;gap:12px;align-items:center;text-align:center;--d:1.9s">
+    <p class="mono" style="font-size:28px;margin:0">latitude above 90°</p>
+    <span class="chip hot">API answers 200 OK</span>
+  </div>
+  <p class="abs mono" data-b="2" data-snd="pop" style="left:160px;top:745px;width:1000px;font-size:23px;margin:0"><span class="dim">{ "id": "TC-CREATE-09", "area": "CIRCLE (91 35.2, 500)",</span><br><span class="ok">  "bug": "BUG-API-004: out-of-range coordinates are accepted" }</span></p>
+  <p class="abs card-b fade" data-b="2" style="left:160px;top:830px;width:1000px;margin:0;--d:.4s">A row with a bug ID becomes a strict xfail: the run stays green, and turns red the day the bug is fixed.</p>
+</section>
+
+<!-- 7. Principles -->
+<section class="slide" id="principles" data-prog="0,1">
+  <div class="abs col" style="left:160px;top:150px;width:1600px;gap:18px">
+    <p class="kicker">Parts 1 and 2</p>
+    <h2 class="h2" style="font-size:68px">The same principles in both suites</h2>
+  </div>
+  <div class="abs" style="left:160px;top:330px;width:1600px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+    <div class="panel col pop" data-b="1" data-snd="pop" style="padding:32px 34px;gap:14px;--d:0s"><span class="h3" style="font-size:36px">Page Object Model</span><span class="body" style="font-size:26px"><span class="ok">UI</span> One class per page in pages/</span><span class="body" style="font-size:26px"><span class="hot">API</span> All calls in one TraccarApi class</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.25:pop" style="padding:32px 34px;gap:14px;--d:.25s"><span class="h3" style="font-size:36px">Data-driven tests</span><span class="body" style="font-size:26px"><span class="ok">UI</span> Each search case is one data row</span><span class="body" style="font-size:26px"><span class="hot">API</span> Geofence cases are data rows</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.5:pop" style="padding:32px 34px;gap:14px;--d:.5s"><span class="h3" style="font-size:36px">Independent tests</span><span class="body" style="font-size:26px"><span class="ok">UI</span> A new user for every run</span><span class="body" style="font-size:26px"><span class="hot">API</span> A fresh geofence per test, deleted after</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.75:pop" style="padding:32px 34px;gap:14px;--d:.75s"><span class="h3" style="font-size:36px">Separate layers</span><span class="body" style="font-size:26px"><span class="ok">UI</span> tests, pages, and data apart</span><span class="body" style="font-size:26px"><span class="hot">API</span> tests, api client, and data apart</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="1:pop" style="padding:32px 34px;gap:14px;--d:1s"><span class="h3" style="font-size:36px">Check the real result</span><span class="body" style="font-size:26px"><span class="ok">UI</span> Results compared with the API response</span><span class="body" style="font-size:26px"><span class="hot">API</span> Every change read back with GET</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="1.25:pop" style="padding:32px 34px;gap:14px;--d:1.25s"><span class="h3" style="font-size:36px">Known bugs stay visible</span><span class="body" style="font-size:26px"><span class="ok">UI</span> test.fail with the bug ID</span><span class="body" style="font-size:26px"><span class="hot">API</span> strict xfail with the bug ID</span></div>
+  </div>
+</section>
+
+<!-- 8. CI -->
+<section class="slide" id="ci" data-prog="2">
+  <div class="win" style="left:160px;top:150px;width:860px;height:700px">
+    <div class="win-bar"><i></i><i></i><i></i><span>.gitlab-ci.yml</span></div>
+    <div class="win-body" style="font-size:27px">
+      <div class="hot from-right" data-b="0" style="--d:.3s">ui-tests:</div>
+      <div class="from-right" data-b="0" style="--d:.5s">  image: node:20</div>
+      <div class="from-right" data-b="0" style="--d:.7s">  script:</div>
+      <div class="ok from-right" data-b="0" style="--d:.9s">    - xvfb-run … npx playwright test</div>
+      <div> </div>
+      <div class="hot from-right" data-b="0" style="--d:1.3s">api-tests:</div>
+      <div class="from-right" data-b="0" style="--d:1.5s">  image: python:3.12-slim</div>
+      <div class="from-right" data-b="0" style="--d:1.7s">  script:</div>
+      <div class="ok from-right" data-b="0" style="--d:1.9s">    - pytest</div>
+    </div>
+  </div>
+  <div class="abs panel row from-right" data-b="1" data-snd="ding" style="left:1080px;top:150px;width:680px;height:126px;padding:0 36px;box-sizing:border-box;justify-content:space-between;--d:0s"><span class="mono" style="font-size:34px">ui-tests</span><span class="chip">passed ✓</span></div>
+  <div class="abs panel row from-right" data-b="1" data-snd-at="0.5:ding" style="left:1080px;top:300px;width:680px;height:126px;padding:0 36px;box-sizing:border-box;justify-content:space-between;--d:.5s"><span class="mono" style="font-size:34px">api-tests</span><span class="chip">passed ✓</span></div>
+  <div class="abs row from-right" data-b="2" data-snd="click" style="left:1080px;top:500px;width:680px;gap:22px;--d:0s"><span style="flex:0 0 300px;font-size:30px;line-height:1.2">Headless browser</span><span class="mono hot" style="font-size:34px;white-space:nowrap">→ ✕</span><span class="label" style="font-size:30px">Security check page</span></div>
+  <div class="abs row from-right" data-b="2" data-snd-at="1.2:ding" style="left:1080px;top:670px;width:680px;gap:22px;--d:1.2s"><span style="flex:0 0 300px;font-size:30px;line-height:1.2">Visible browser in Xvfb</span><span class="mono ok" style="font-size:34px;white-space:nowrap">→ ✓</span><span class="label" style="font-size:30px">Toolshop site</span></div>
+</section>
+
+<!-- 9. Load: the question and the plan -->
+<section class="slide" id="load-plan" data-prog="3">
+  <div class="abs col" style="left:160px;top:170px;width:1640px;gap:16px">
+    <p class="kicker">Part 3, step 1: The question</p>
+    <h2 class="h2" style="font-size:62px">Can the site handle 1,000 users in 15 seconds?</h2>
+    <p class="sub">JMeter on BlazeDemo, a site made for load-testing practice</p>
+  </div>
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <line x1="160" y1="600" x2="1760" y2="600" style="stroke:var(--ink);stroke-opacity:.25;stroke-width:4px"/>
+    <line id="ls-fill" x1="160" y1="600" x2="1760" y2="600" pathLength="1" style="stroke:var(--accent);stroke-width:6px;stroke-dasharray:1;stroke-dashoffset:1"/>
+    <g id="ls-dots" transform="translate(0 -20)"></g>
+  </svg>
+  <div class="abs row fade" data-b="1" style="left:160px;top:616px;width:1600px;justify-content:space-between"><span class="mono dim" style="font-size:24px">0 s</span><span class="mono dim" style="font-size:24px">15 s</span></div>
+  <div class="abs row" style="left:160px;top:680px;gap:30px;align-items:stretch">
+    <div class="panel col pop" data-b="2" data-snd="pop" style="width:360px;padding:24px 30px;box-sizing:border-box;gap:8px;--d:0s"><span class="kicker">Before</span><span style="font-size:30px">1 user, 10 visits</span></div>
+    <div class="panel col pop" data-b="2" data-snd-at="0.3:pop" style="width:820px;padding:24px 30px;box-sizing:border-box;gap:8px;--d:.3s"><span class="kicker hot">During</span><span style="font-size:30px">1,000 users, one visit each, over 15 seconds</span></div>
+    <div class="panel col pop" data-b="2" data-snd-at="0.6:pop" style="width:360px;padding:24px 30px;box-sizing:border-box;gap:8px;--d:.6s"><span class="kicker">After</span><span style="font-size:30px">1 user, 10 visits</span></div>
+  </div>
+  <p class="abs label fade" data-b="2" style="left:160px;top:840px;margin:0;font-size:26px;--d:.9s">Run from the command line. Every request must return 200.</p>
+</section>
+
+<!-- 10. Load: what happened -->
+<section class="slide" id="load-results" data-prog="3">
+  <p class="abs kicker" style="left:160px;top:130px">Part 3, step 2: What happened</p>
+  <div class="abs" style="left:160px;top:190px;width:1600px;display:grid;grid-template-columns:1fr 2fr 1fr;gap:36px">
+    <div class="panel col pop" data-b="0" data-snd="ding" style="height:280px;padding:36px;box-sizing:border-box;justify-content:space-between;--d:.2s"><span class="kicker">Errors</span><span class="num ok">0</span></div>
+    <div class="panel col pop" data-b="1" data-snd="pop" style="height:280px;padding:36px;box-sizing:border-box;justify-content:space-between;--d:0s"><span class="kicker">Median response: before, during, after</span>
+      <span class="row" style="gap:22px;align-items:baseline"><span class="num" style="font-size:96px">371</span><span class="dim mono" style="font-size:40px">→</span><span class="num hot" style="font-size:96px">593</span><span class="dim mono" style="font-size:40px">→</span><span class="num ok" style="font-size:96px">486</span><span class="label">ms</span></span></div>
+    <div class="panel col pop" data-b="2" data-snd="pop" style="height:280px;padding:36px;box-sizing:border-box;justify-content:space-between;--d:0s"><span class="kicker hot">Slow requests</span><span class="num hot">41</span></div>
+  </div>
+  <p class="abs card-b fade" data-b="1" style="left:160px;top:500px;width:1600px;margin:0;font-size:27px;--d:.6s">Slower under load, still under a second, and back to normal after. Each new HTTPS connection added 139 ms.</p>
+  <p class="abs card-b fade" data-b="2" style="left:160px;top:570px;width:1600px;margin:0;font-size:30px;--d:.4s"><span class="hot">41 of the 1,000 requests waited 7 to 10 seconds on the server.</span> Their connection was normal.</p>
+  <div class="abs row" style="left:160px;top:660px;gap:24px">
+    <div class="panel row from-right" data-b="3" data-snd="tick" style="padding:26px 32px;gap:20px;--d:0s"><span class="mono ok" style="font-size:36px">✓</span><span style="font-size:28px">Median within Google’s 0.8 s target</span></div>
+    <div class="panel row from-right" data-b="3" data-snd-at="0.5:pop" style="padding:26px 32px;gap:20px;--d:.5s"><span class="mono hot" style="font-size:36px">✕</span><span style="font-size:28px">Slowest 1% at 9 s, near the 10 s limit</span></div>
+  </div>
+</section>
+
+<!-- 11. Load: why -->
+<section class="slide" id="load-why" data-prog="3">
+  <p class="abs kicker hot" style="left:160px;top:110px">Part 3, step 3: Why were 41 requests slow?</p>
+  <div class="abs panel col fade" data-b="0" style="left:160px;top:170px;width:920px;height:690px;padding:34px 40px;box-sizing:border-box;gap:8px">
+    <span class="card-t">Idea 1: too many users at once?</span>
+    <span class="card-b">Step test: 10, 50, 100, 250, 500, 1,000 users. 0 errors, and throughput kept up.</span>
+  </div>
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <rect class="knee" data-b="0" x="840" y="400" width="190" height="370" rx="12" style="fill:var(--main);fill-opacity:.14;transition-delay:2s"/>
+    <line class="fade" data-b="0" x1="220" y1="770" x2="1040" y2="770" style="stroke:var(--ink);stroke-opacity:.3;stroke-width:3px"/>
+    <polyline class="draw" data-b="0" pathLength="1" id="lw-med" style="fill:none;stroke:var(--accent);stroke-width:7px;stroke-linejoin:round;stroke-linecap:round;--d:.4s"/>
+    <polyline class="draw" data-b="0" data-snd-at="1.2:whoosh" pathLength="1" id="lw-p99" style="fill:none;stroke:var(--main);stroke-width:7px;stroke-linejoin:round;stroke-linecap:round;--d:1.2s"/>
+  </svg>
+  <div class="abs" id="lw-axis" style="left:0;top:0"></div>
+  <div class="abs row fade" data-b="0" style="left:220px;top:350px;gap:36px;--d:.4s"><span class="mono ok" style="font-size:24px">— median, flat at ~430 ms</span><span class="mono hot" style="font-size:24px">— p99 grows</span></div>
+  <div class="abs panel col from-right" data-b="1" data-snd="pop" style="left:1130px;top:170px;width:630px;height:690px;padding:34px 40px;box-sizing:border-box;gap:26px">
+    <span class="card-t">Idea 2: a server starting up?</span>
+    <span class="card-b" style="margin-top:-14px">Repeat after a 22-minute rest. p99 of three runs:</span>
+    <div class="col" style="gap:8px"><span style="font-size:28px">First run</span><div class="row" style="gap:16px"><div class="bar-seg" data-b="1" style="height:24px;width:330px;background:var(--main);--d:.4s"></div><span class="mono" style="font-size:24px;white-space:nowrap">9,066 ms</span></div></div>
+    <div class="col" style="gap:8px"><span style="font-size:28px">Warm server</span><div class="row" style="gap:16px"><div class="bar-seg" data-b="1" style="height:24px;width:32px;background:var(--accent);--d:.9s"></div><span class="mono" style="font-size:24px;white-space:nowrap">885 ms</span></div></div>
+    <div class="col" style="gap:8px"><span style="font-size:28px">After the rest</span><div class="row" style="gap:16px"><div class="bar-seg" data-b="1" style="height:24px;width:98px;background:var(--ink);--d:1.4s"></div><span class="mono" style="font-size:24px;white-space:nowrap">2,679 ms</span></div></div>
+    <div class="col pop" data-b="2" data-snd="ding" style="margin-top:auto;gap:12px"><span class="chip hot" style="align-self:flex-start">Cause: not confirmed</span><span class="card-b">The slow band didn’t come back. One run isn’t enough.</span></div>
+  </div>
+</section>
+
+<!-- 12. Load: a closer look -->
+<section class="slide" id="load-closer" data-prog="3">
+  <div class="abs col" style="left:160px;top:150px;width:1600px;gap:16px">
+    <p class="kicker">Part 3, step 4: A closer look at one response</p>
+    <h2 class="h2" style="font-size:64px">TLS took 54% of a new visitor’s 1,420 ms</h2>
+  </div>
+  <div class="abs row" data-b="0" data-snd="whoosh" style="left:160px;top:340px;width:1600px;height:80px;gap:6px;align-items:stretch;transform:none">
+    <div class="bar-seg" style="flex:0 0 134px;background:color-mix(in srgb, var(--ink) 30%, var(--ground));--d:.2s"></div>
+    <div class="bar-seg" style="flex:0 0 56px;background:color-mix(in srgb, var(--ink) 30%, var(--ground));--d:.5s"></div>
+    <div class="bar-seg" style="flex:0 0 851px;background:var(--main);--d:.8s"></div>
+    <div class="bar-seg" style="flex:0 0 535px;background:color-mix(in srgb, var(--ink) 30%, var(--ground));--d:1.4s"></div>
+  </div>
+  <div class="abs row fade" data-b="0" style="left:160px;top:436px;width:1600px;font-family:var(--mono);font-size:24px;color:var(--soft);--d:1.6s"><span style="width:196px;font-size:19px;white-space:nowrap">DNS 124 · TCP 55</span><span class="hot" style="width:857px">TLS handshake 761 ms</span><span>Server 480 ms</span></div>
+  <span class="abs kicker fade" data-b="1" style="left:160px;top:530px;--d:0s">From the response headers</span>
+  <div class="abs" style="left:160px;top:580px;width:1600px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px">
+    <div class="panel col pop" data-b="1" data-snd="pop" style="padding:24px 28px;gap:6px;--d:.1s"><span class="mono" style="font-size:22px">server: Google Frontend</span><span class="card-b">Runs on Google Cloud</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.3:pop" style="padding:24px 28px;gap:6px;--d:.3s"><span class="mono" style="font-size:22px">cache-control: no-cache</span><span class="card-b">Every visit hits the server</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.5:pop" style="padding:24px 28px;gap:6px;--d:.5s"><span class="mono hot" style="font-size:22px">x-powered-by: PHP/7.4.30</span><span class="card-b">No security updates</span></div>
+    <div class="panel col pop" data-b="1" data-snd-at="0.7:ding" style="padding:24px 28px;gap:6px;--d:.7s"><span class="mono ok" style="font-size:22px">/missing-page → 404</span><span class="card-b">Errors are reported correctly</span></div>
+  </div>
+  <p class="abs card-b fade" data-b="2" data-snd="tick" style="left:160px;top:800px;width:1600px;margin:0;font-size:28px"><span class="ok">Next:</span> test from several locations, load images, CSS, and scripts too, and repeat every run.</p>
+</section>
+
+<!-- 13. Close -->
+<section class="slide" id="close" data-prog="">
+  <svg class="abs" viewBox="0 0 1920 1080" style="inset:0;width:100%;height:100%">
+    <circle class="spin" cx="960" cy="250" r="70" stroke-dasharray="30 14" style="fill:none;stroke:var(--main);stroke-width:12px"/>
+    <circle class="breathe" cx="960" cy="250" r="22" style="fill:var(--main)"/>
+  </svg>
+  <div class="abs col" style="left:160px;top:370px;width:1600px;align-items:center;text-align:center;gap:30px">
+    <h2 class="h1">Duha Jarrar</h2>
+    <div class="bar-seg in" style="width:340px;height:8px;border-radius:4px;background:var(--accent);transform-origin:50% 50%"></div>
+    <p class="sub">Everything is in the repository</p>
+    <div class="row" style="gap:20px;margin-top:10px">
+      <span class="chip pop" data-b="1" data-snd="pop" style="--d:0s">Code</span><span class="chip pop" data-b="1" style="--d:.15s">Test cases</span><span class="chip pop" data-b="1" style="--d:.3s">Reports</span><span class="chip pop" data-b="1" style="--d:.45s">Bug tickets</span>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<div id="notes"></div>
+<div id="help">→ next · ← back · N notes · M sound · F full screen</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Speaker notes (the script) ----------
+  var NOTES = {
+    "title": ["Hi, I’m Duha Jarrar, a QA Automation Engineer. This is my QA automation project.","It has three parts: UI tests for an online shop, API tests for a location service, and a load test."],
+    "path": ["Each part has its own README with the test cases, the results, and the bugs I found.","Both test suites also run in a CI pipeline."],
+    "ui-scope": ["For the UI part, I tested the Toolshop demo site with Playwright and TypeScript.","The tests cover login, search by three criteria, the cart, and the full checkout.","There are 36 tests."],
+    "ui-code": ["I used the Page Object pattern, so each page’s fields and actions live in one class.","The search tests are data-driven: each row in this file is one test case.","Adding a new case means adding one row."],
+    "ui-user": ["Every run creates a new user through the API,","so the tests don’t depend on a shared account or on each other."],
+    "ui-run": ["Here the login tests run live.","And this is the HTML report of the full run."],
+    "ui-bugs": ["I found three bugs.","For example, the order can fail after the payment succeeds, and the user isn’t told.","Each bug has a ticket with steps, expected and actual results, and a video.","Their tests are marked as expected to fail, so the day a bug is fixed, the run reminds us to close it."],
+    "api-main": ["Okay, now the API part. I used Traccar, a GPS tracking platform with a REST API.","The main object is the geofence, an area on the map. It’s sent as text, like a circle with a center and a radius, so creating a geofence is how we send location information to the map.","The tests create it, update it, and delete it, and after each step they read it back, to make sure the change was really saved, not just that we got 200."],
+    "api-built": ["I built it with Python, pytest, and requests, and it has the same structure as the UI part.","All the calls live in one client class, TraccarApi, so it works like a page object for the API.","The test cases are data rows, run with pytest’s parametrize, the same data-driven idea as the search tests.","And fixtures handle the setup: we log in once, and every test gets a fresh geofence that’s deleted after it, so tests don’t affect each other.","The tests cover valid data, invalid data, and edge cases, with five response codes: 200, 204, 400, 401, and 404."],
+    "api-bugs": ["In total there are 44 tests, and I found seven bugs.","For example, the API accepts coordinates that don’t exist on Earth: a latitude above 90 gets 200 OK.","Like in the UI part, known bugs stay in the suite. Here, a data row with a bug ID becomes a strict xfail, so if the bug is fixed, the run turns red and we remember to close the ticket."],
+    "principles": ["So both suites follow the same principles: page objects, data-driven tests, independent tests, separate layers, checking the real result, and keeping known bugs visible."],
+    "ci": ["Both suites run in a GitLab pipeline, with one job each, and the reports are kept as artifacts.","Both jobs pass on a cloud CI runner.","One thing I noticed: Cloudflare stops headless browsers on cloud servers. So in CI, the UI tests run a normal, visible browser inside a virtual screen called Xvfb."],
+    "load-plan": ["Now the load test. The question was simple: can the site handle 1,000 users in 15 seconds? I used JMeter on BlazeDemo, a site made for load-testing practice.","So 1,000 users visit the homepage within 15 seconds.","And to see the effect, I measured the response time before the load, during it, and after it."],
+    "load-results": ["The first result: no errors at all.","The median went from 371 milliseconds before, to 593 during, and back to 486 after. So it’s slower under load, but still under a second, and it recovers.","But 41 of the 1,000 requests waited 7 to 10 seconds, and the wait was on the server, not the connection.","Compared with Google’s targets, the typical request is good, but the slowest 1% is close to where users give up. So that’s what I investigated."],
+    "load-why": ["My first idea was too many users at once, so I ran a step test from 10 up to 1,000 users. No errors, throughput kept up, and only the slowest requests grew near 1,000.","My second idea was the server starting up, a cold start, so I let it rest 22 minutes and ran 1,000 users again.","The same slow band didn’t come back. So the cause is not confirmed, and the main lesson is that one run isn’t enough to judge a load test."],
+    "load-closer": ["Finally, I looked at a single request. More than half of a new visitor’s time is the secure connection setup.","The headers show the site runs on Google Cloud, doesn’t cache the page, and uses an old PHP version. And a missing page correctly returns 404.","As next steps, I’d test from several locations, load the full page, and repeat every run."],
+    "close": ["Everything is in the repository: the code, the test cases, the reports, and the bug tickets. Thank you for watching."]
+  };
+
+  // ---------- Sound (synthesized, no files) ----------
+  var ac = null, master = null, muted = false;
+  function audio() {
+    if (!ac) {
+      try { ac = new (window.AudioContext || window.webkitAudioContext)(); master = ac.createGain(); master.gain.value = 0.7; master.connect(ac.destination); }
+      catch (e) { ac = null; }
+    }
+    if (ac && ac.state === "suspended") { try { ac.resume(); } catch (e) {} }
+    return ac;
+  }
+  function tone(f, dur, type, peak, at, f2) {
+    var a = audio(); if (!a || muted) return;
+    var t = a.currentTime + (at || 0), o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + 0.05);
+  }
+  var nbuf = null;
+  function noise(dur, peak, freq, q, at, ftype, f2) {
+    var a = audio(); if (!a || muted) return;
+    if (!nbuf) { nbuf = a.createBuffer(1, a.sampleRate, a.sampleRate); var d = nbuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    var t = a.currentTime + (at || 0), s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = nbuf; f.type = ftype || "bandpass"; f.frequency.setValueAtTime(freq, t); f.Q.value = q || 1;
+    if (f2) f.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + dur + 0.05);
+  }
+  var SND = {
+    click: function (at) { noise(0.035, 0.35, 3200, 2.2, at); tone(2100, 0.025, "square", 0.025, at); },
+    tick: function (at) { noise(0.018, 0.16, 5200, 3, at, "highpass"); },
+    pop: function (at) { tone(720, 0.14, "sine", 0.2, at, 360); },
+    ding: function (at) { tone(880, 0.55, "sine", 0.12, at); tone(1320, 0.7, "sine", 0.08, (at || 0) + 0.09); },
+    whoosh: function (at) { noise(0.5, 0.16, 400, 0.8, at, "bandpass", 2400); }
+  };
+  function play(name, at) { if (SND[name]) SND[name](at || 0); }
+
+  // ---------- Deck ----------
+  var stage = document.getElementById("stage");
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var prog = document.getElementById("prog"), count = document.getElementById("count");
+  var notesEl = document.getElementById("notes");
+  var cur = -1, step = 0, timers = [], rafs = [];
+
+  function maxStep(s) {
+    var m = 0;
+    s.querySelectorAll("[data-b]").forEach(function (e) { var b = +e.getAttribute("data-b"); if (b !== 9 && b > m) m = b; });
+    return m;
+  }
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; rafs.forEach(cancelAnimationFrame); rafs = []; }
+
+  function applyStep(s, st, instant, fresh) {
+    if (instant) { s.classList.add("instant"); }
+    var sounds = [];
+    s.querySelectorAll("[data-b]").forEach(function (e) {
+      var b = +e.getAttribute("data-b");
+      if (b === 9) return; // shown by a hook
+      var on = b <= st, was = e.classList.contains("in");
+      e.classList.toggle("in", on);
+      if (on && !was && !instant && (b === st || fresh)) {
+        var sn = e.getAttribute("data-snd"); if (sn) sounds.push([sn, 0]);
+        var sa = e.getAttribute("data-snd-at"); if (sa) { var p = sa.split(":"); sounds.push([p[1], +p[0]]); }
+      }
+    });
+    sounds.forEach(function (x) { play(x[0], x[1]); });
+    var hook = HOOKS[s.id]; if (hook) hook(s, st, instant);
+    if (instant) { void s.offsetWidth; requestAnimationFrame(function () { s.classList.remove("instant"); }); }
+    renderNotes();
+  }
+
+  function go(i, st, instant) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    var changed = i !== cur;
+    if (changed || instant) clearTimers();
+    if (changed) {
+      if (cur >= 0) slides[cur].classList.remove("on");
+      cur = i;
+      var s = slides[cur];
+      s.classList.add("instant");
+      s.querySelectorAll("[data-b]").forEach(function (e) { e.classList.remove("in"); });
+      resetHook(s);
+      void s.offsetWidth;
+      s.classList.remove("instant");
+      s.classList.add("on");
+      var p = s.getAttribute("data-prog");
+      var on = p === "" ? [] : p.split(",").map(Number);
+      prog.style.opacity = on.length ? 1 : 0;
+      prog.querySelectorAll(".p").forEach(function (e) { e.classList.toggle("on", on.indexOf(+e.getAttribute("data-p")) >= 0); });
+      count.textContent = (cur + 1) + " / " + slides.length;
+      try { history.replaceState(null, "", "#s" + (cur + 1)); } catch (e) {}
+    }
+    step = st;
+    applyStep(slides[cur], step, instant, changed);
+  }
+  function next() {
+    play("click");
+    var m = maxStep(slides[cur]);
+    if (step < m) go(cur, step + 1, false);
+    else if (cur < slides.length - 1) { play("whoosh"); go(cur + 1, 0, false); }
+  }
+  function prev() {
+    play("click");
+    if (step > 0) go(cur, step - 1, true);
+    else if (cur > 0) { var s = slides[cur - 1]; go(cur - 1, maxStep(s), true); }
+  }
+
+  // ---------- Slide hooks ----------
+  function countTo(el, a, b, ms, instant) {
+    if (instant) { el.textContent = b; return; }
+    var t0 = performance.now();
+    (function f(now) {
+      var p = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(a + (b - a) * e).toLocaleString("en-US");
+      if (p < 1) rafs.push(requestAnimationFrame(f));
+    })(t0);
+  }
+  function typeInto(el, text, cps, instant, done) {
+    if (instant) { el.textContent = text; if (done) done(true); return; }
+    var i = 0;
+    (function tick() {
+      i++; el.textContent = text.slice(0, i) + (i < text.length ? "▏" : "");
+      if (text[i - 1] && text[i - 1] !== " ") play("tick");
+      if (i < text.length) later(tick, 1000 / cps * (0.75 + Math.random() * 0.5));
+      else if (done) done(false);
+    })();
+  }
+  var LOGIN = [["TC-LOGIN-01 Login with valid credentials", "3.2s"], ["TC-LOGIN-02 Login is rejected with wrong password", "3.6s"], ["TC-LOGIN-03 Login is rejected with unregistered email", "3.2s"], ["TC-LOGIN-04 Login form shows an error for empty email", "3.2s"], ["TC-LOGIN-05 Login form shows an error for email without @", "3.5s"], ["TC-LOGIN-06 Login form shows an error for empty password", "3.2s"], ["TC-LOGIN-07 Password is hidden while typing", "3.4s"], ["TC-LOGIN-08 Sign out ends the session", "5.6s"]];
+  (function buildLogin() {
+    var list = document.getElementById("ur-list");
+    LOGIN.forEach(function (r) {
+      var row = document.createElement("div"); row.style.cssText = "display:flex;gap:26px;align-items:center;transition:opacity .3s";
+      var m = document.createElement("span"); m.style.width = "30px"; m.className = "dim"; m.textContent = "○";
+      var n = document.createElement("span"); n.style.flex = "1"; n.textContent = r[0];
+      var t = document.createElement("span"); t.className = "dim"; t.textContent = r[1]; t.style.transition = "opacity .3s";
+      row.append(m, n, t); list.append(row);
+    });
+  })();
+  (function buildMapGrid() {
+    var g = document.getElementById("as-grid"), ns = "http://www.w3.org/2000/svg";
+    for (var x = 0; x <= 800; x += 80) { var l = document.createElementNS(ns, "line"); l.setAttribute("x1", x); l.setAttribute("x2", x); l.setAttribute("y1", 0); l.setAttribute("y2", 640); g.append(l); }
+    for (var y = 0; y <= 640; y += 80) { var k = document.createElementNS(ns, "line"); k.setAttribute("y1", y); k.setAttribute("y2", y); k.setAttribute("x1", 0); k.setAttribute("x2", 800); g.append(k); }
+  })();
+  (function buildGlobe() {
+    var g = document.getElementById("ab-globe"), ns = "http://www.w3.org/2000/svg", cx = 1400, cy = 430, r = 210;
+    var c = document.createElementNS(ns, "circle"); c.setAttribute("cx", cx); c.setAttribute("cy", cy); c.setAttribute("r", r);
+    c.setAttribute("style", "fill:color-mix(in srgb, var(--ground) 88%, var(--ink));stroke:var(--ink);stroke-opacity:.35;stroke-width:4px"); g.append(c);
+    [-60, -30, 0, 30, 60].forEach(function (d) {
+      var e = document.createElementNS(ns, "ellipse"), w = r * Math.cos(d * Math.PI / 180);
+      e.setAttribute("cx", cx); e.setAttribute("cy", cy + r * Math.sin(d * Math.PI / 180)); e.setAttribute("rx", w); e.setAttribute("ry", w * 0.18);
+      e.setAttribute("style", "fill:none;stroke:var(--ink);stroke-opacity:.15;stroke-width:2px"); g.append(e);
+    });
+    [80, 155].forEach(function (rx) {
+      var e = document.createElementNS(ns, "ellipse"); e.setAttribute("cx", cx); e.setAttribute("cy", cy); e.setAttribute("rx", rx); e.setAttribute("ry", r);
+      e.setAttribute("style", "fill:none;stroke:var(--ink);stroke-opacity:.15;stroke-width:2px"); g.append(e);
+    });
+  })();
+  (function buildChart() {
+    var med = [447, 428, 435, 418, 422, 427], p99 = [528, 472, 597, 667, 551, 885], users = ["10", "50", "100", "250", "500", "1000"];
+    var x = function (i) { return 260 + i * 150; }, y = function (v) { return 770 - v * 0.4; };
+    var pts = function (a) { return a.map(function (v, i) { return x(i) + "," + y(v).toFixed(1); }).join(" "); };
+    document.getElementById("lw-med").setAttribute("points", pts(med));
+    document.getElementById("lw-p99").setAttribute("points", pts(p99));
+    var ax = document.getElementById("lw-axis");
+    users.forEach(function (u, i) {
+      var p = document.createElement("p"); p.className = "abs mono dim"; p.textContent = u;
+      p.style.cssText = "left:" + (x(i) - 60) + "px;top:784px;width:120px;text-align:center;font-size:22px;margin:0"; ax.append(p);
+    });
+  })();
+  (function buildDots() {
+    var g = document.getElementById("ls-dots"), ns = "http://www.w3.org/2000/svg", seed = 11;
+    var rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (var i = 0; i < 200; i++) {
+      var c = document.createElementNS(ns, "circle");
+      c.setAttribute("cx", (160 + i / 199 * 1600 + (rnd() - 0.5) * 10).toFixed(1)); c.setAttribute("cy", (470 + rnd() * 110).toFixed(1)); c.setAttribute("r", 7);
+      c.setAttribute("style", "fill:var(--main);opacity:0;transition:opacity .25s, transform .35s;transform:translateY(-30px)"); g.append(c);
+    }
+  })();
+  function resetHook(s) {
+    if (s.id === "ui-code") { document.getElementById("uic-typed").textContent = ""; setWin2(false); }
+    if (s.id === "ui-user") { document.getElementById("uu-cmd").textContent = ""; ["uu-l1", "uu-l2"].forEach(function (id) { document.getElementById(id).classList.remove("in"); }); }
+    if (s.id === "ui-run") { setReport(false); markLogin(-1); }
+    if (s.id === "ui-bugs") { document.getElementById("ub-cards").classList.remove("focused"); }
+    if (s.id === "api-main") { document.getElementById("as-map").classList.remove("gf-on"); }
+    if (s.id === "load-plan") { setDots(0); var f = document.getElementById("ls-fill"); f.style.transition = "none"; f.style.strokeDashoffset = 1; }
+  }
+  function setWin2(on) {
+    var w1 = document.getElementById("uic-w1").style, w2 = document.getElementById("uic-w2").style;
+    w1.opacity = on ? 0 : 1; w1.transform = on ? "translateY(-30px)" : "none";
+    w2.opacity = on ? 1 : 0; w2.transform = on ? "none" : "translateY(30px)";
+  }
+  function setReport(on) {
+    var w = document.getElementById("ur-win").style, r = document.getElementById("ur-rep").style;
+    w.opacity = on ? 0 : 1; w.transform = on ? "translateY(-30px)" : "none";
+    r.opacity = on ? 1 : 0; r.transform = on ? "none" : "translateY(30px)";
+  }
+  function markLogin(n) {
+    var rows = document.getElementById("ur-list").children;
+    for (var i = 0; i < rows.length; i++) {
+      var m = rows[i].children[0], t = rows[i].children[2];
+      var done = i <= n;
+      m.textContent = done ? "✓" : "○"; m.className = done ? "ok" : "dim";
+      rows[i].style.opacity = done ? 1 : 0.55; t.style.opacity = done ? 1 : 0;
+    }
+  }
+  function setDots(n) {
+    var d = document.getElementById("ls-dots").children;
+    for (var i = 0; i < d.length; i++) { var on = i < n; d[i].style.opacity = on ? 1 : 0; d[i].style.transform = on ? "none" : "translateY(-30px)"; }
+  }
+  var HOOKS = {
+    "ui-scope": function (s, st, instant) {
+      var el = document.getElementById("uis-num");
+      if (st >= 2) countTo(el, 18, 36, 1100, instant); else el.textContent = "18";
+    },
+    "ui-code": function (s, st, instant) {
+      setWin2(st >= 1);
+      var el = document.getElementById("uic-typed");
+      var row = '  { id: "TC-SEARCH-05", keyword: "pliers", category: "Pliers", brand: "ForgeFlex Tools" },';
+      if (st >= 2) typeInto(el, row, 34, instant); else el.textContent = "";
+    },
+    "ui-user": function (s, st, instant) {
+      var cmd = document.getElementById("uu-cmd"), l1 = document.getElementById("uu-l1"), l2 = document.getElementById("uu-l2");
+      if (instant || cmd.textContent === "$ npx playwright test") { cmd.textContent = "$ npx playwright test"; l1.classList.add("in"); l2.classList.add("in"); return; }
+      if (st === 0) typeInto(cmd, "$ npx playwright test", 20, false, function () {
+        later(function () { l1.classList.add("in"); play("tick"); }, 400);
+        later(function () { l2.classList.add("in"); play("ding"); }, 1100);
+      });
+    },
+    "ui-run": function (s, st, instant) {
+      setReport(st >= 1);
+      if (instant || st >= 1) { markLogin(LOGIN.length - 1); return; }
+      markLogin(-1);
+      LOGIN.forEach(function (r, i) { later(function () { markLogin(i); play(i === LOGIN.length - 1 ? "ding" : "tick"); }, 700 + i * 650); });
+    },
+    "ui-bugs": function (s, st) { document.getElementById("ub-cards").classList.toggle("focused", st >= 1); },
+    "api-main": function (s, st) { document.getElementById("as-map").classList.toggle("gf-on", st >= 2); },
+    "api-bugs": function (s, st, instant) {
+      if (st === 0 && !instant) { countTo(document.getElementById("ab-n1"), 22, 44, 1300); countTo(document.getElementById("ab-n2"), 1, 7, 1300); }
+      else { document.getElementById("ab-n1").textContent = 44; document.getElementById("ab-n2").textContent = 7; }
+    },
+    "load-plan": function (s, st, instant) {
+      var fill = document.getElementById("ls-fill");
+      if (st < 1) { setDots(0); fill.style.transition = "none"; fill.style.strokeDashoffset = 1; return; }
+      if (instant) { setDots(200); fill.style.transition = "none"; fill.style.strokeDashoffset = 0; return; }
+      if (st === 1) {
+        fill.style.transition = "stroke-dashoffset 3s linear"; void fill.getBoundingClientRect(); fill.style.strokeDashoffset = 0;
+        for (var k = 1; k <= 40; k++) (function (k) { later(function () { setDots(k * 5); if (k % 4 === 0) play("tick"); }, k * 75); })(k);
+      }
+    }
+  };
+
+  // ---------- Layout, input ----------
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight, k = Math.min(w / 1920, h / 1080);
+    stage.style.transform = "scale(" + k + ")";
+    stage.style.left = ((w - 1920 * k) / 2) + "px"; stage.style.top = ((h - 1080 * k) / 2) + "px";
+  }
+  window.addEventListener("resize", fit); fit();
+
+  function renderNotes() {
+    var lines = NOTES[slides[cur].id] || [];
+    notesEl.innerHTML = "";
+    lines.forEach(function (l, i) {
+      var p = document.createElement("div"); p.textContent = l;
+      if (i === Math.min(step, lines.length - 1)) { var b = document.createElement("b"); b.textContent = l; p.textContent = ""; p.append(b); }
+      notesEl.append(p);
+    });
+  }
+  var help = document.getElementById("help");
+  setTimeout(function () { help.classList.add("gone"); }, 6000);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === "ArrowRight" || k === " " || k === "PageDown" || k === "Enter") { e.preventDefault(); next(); }
+    else if (k === "ArrowLeft" || k === "PageUp" || k === "Backspace") { e.preventDefault(); prev(); }
+    else if (k === "Home") { go(0, 0, true); }
+    else if (k === "End") { var l = slides.length - 1; go(l, maxStep(slides[l]), true); }
+    else if (k === "n" || k === "N") { notesEl.classList.toggle("show"); }
+    else if (k === "m" || k === "M") { muted = !muted; help.textContent = muted ? "Sound off (M)" : "Sound on (M)"; help.classList.remove("gone"); setTimeout(function () { help.classList.add("gone"); }, 1500); }
+    else if (k === "f" || k === "F") { try { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); } catch (err) {} }
+  });
+  document.getElementById("view").addEventListener("click", function (e) {
+    if (e.clientX < window.innerWidth * 0.25) prev(); else next();
+  });
+  var idle;
+  document.addEventListener("mousemove", function () { document.body.classList.remove("idle"); clearTimeout(idle); idle = setTimeout(function () { document.body.classList.add("idle"); }, 2000); });
+
+  var start = 0, m = /^#s(\d+)$/.exec(location.hash || "");
+  if (m) start = Math.max(0, Math.min(slides.length - 1, +m[1] - 1));
+  go(start, 0, false);
+})();
+</script>
+</body>
+</html>

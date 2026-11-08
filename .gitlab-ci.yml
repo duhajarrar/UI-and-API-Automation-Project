@@ -1,0 +1,40 @@
+stages:
+  - test
+
+# Part 1: UI tests with Playwright (TypeScript)
+ui-tests:
+  stage: test
+  image: node:20
+  before_script:
+    - cd "Part 1 - UI automation testing"
+    - npm ci
+    - npx playwright install --with-deps chromium
+  script:
+    # Runs the browser headed inside a virtual display (see "headless" in playwright.config.ts)
+    - xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" npx playwright test
+  artifacts:
+    when: always # keep the report even when tests fail
+    paths:
+      - "Part 1 - UI automation testing/playwright-report/"
+      - "Part 1 - UI automation testing/test-results/"
+    reports:
+      junit: "Part 1 - UI automation testing/test-results/junit.xml"
+    expire_in: 14 days
+
+# Part 2: REST API tests with pytest
+# TRACCAR_EMAIL and TRACCAR_PASSWORD come from Settings → CI/CD → Variables (masked)
+api-tests:
+  stage: test
+  image: python:3.12-slim
+  before_script:
+    - cd "Part 2 - API automation testing"
+    - pip install -r requirements.txt
+  script:
+    - pytest --junitxml=reports/junit.xml
+  artifacts:
+    when: always
+    paths:
+      - "Part 2 - API automation testing/reports/"
+    reports:
+      junit: "Part 2 - API automation testing/reports/junit.xml"
+    expire_in: 14 days

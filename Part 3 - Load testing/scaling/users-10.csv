@@ -1,0 +1,31 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1793036586126,913,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,896,0,600
+1793036588048,308,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,302,0,0
+1793036589361,303,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,294,0,0
+1793036590669,330,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,314,0,0
+1793036592002,260,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,257,0,0
+1793036593269,330,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,327,0,0
+1793036594606,248,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,244,0,0
+1793036595867,252,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,249,0,0
+1793036597133,291,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,288,0,0
+1793036598433,247,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,242,0,0
+1793036598693,446,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-1,text,true,,4761,140,1,1,https://blazedemo.com/,444,0,157
+1793036600195,438,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-2,text,true,,4761,140,1,1,https://blazedemo.com/,434,0,152
+1793036601693,515,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-3,text,true,,4761,140,1,1,https://blazedemo.com/,514,0,162
+1793036603193,447,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-4,text,true,,4761,140,1,1,https://blazedemo.com/,446,0,169
+1793036604694,529,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-5,text,true,,4757,140,1,1,https://blazedemo.com/,519,0,233
+1793036606194,425,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-6,text,true,,4757,140,1,1,https://blazedemo.com/,424,0,139
+1793036607700,512,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-7,text,true,,4757,140,1,1,https://blazedemo.com/,511,0,149
+1793036609193,436,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-8,text,true,,4757,140,1,1,https://blazedemo.com/,433,0,136
+1793036610691,437,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-9,text,true,,4761,140,1,1,https://blazedemo.com/,436,0,142
+1793036612207,453,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-10,text,true,,4761,140,1,1,https://blazedemo.com/,449,0,143
+1793036613685,407,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,406,0,133
+1793036615104,298,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,297,0,0
+1793036616408,303,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,298,0,0
+1793036617716,243,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,239,0,0
+1793036618972,246,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,241,0,0
+1793036620223,348,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,344,0,0
+1793036621586,247,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,243,0,0
+1793036622838,278,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,269,0,0
+1793036624122,245,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,244,0,0
+1793036625373,256,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,251,0,0

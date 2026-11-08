@@ -1,0 +1,121 @@
+timeStamp,elapsed,label,responseCode,responseMessage,threadName,dataType,success,failureMessage,bytes,sentBytes,grpThreads,allThreads,URL,Latency,IdleTime,Connect
+1793036918181,966,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,952,0,655
+1793036920167,291,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,287,0,0
+1793036921476,269,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,266,0,0
+1793036922754,344,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,340,0,0
+1793036924106,312,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,309,0,0
+1793036925420,307,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,302,0,0
+1793036926732,267,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,264,0,0
+1793036928013,314,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,312,0,0
+1793036929338,299,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4761,140,1,1,https://blazedemo.com/,296,0,0
+1793036930648,309,Homepage - before load,200,OK,"1. Before load - 1 user, 10 visits 1-1",text,true,,4757,140,1,1,https://blazedemo.com/,305,0,0
+1793036930971,464,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-1,text,true,,4761,140,4,4,https://blazedemo.com/,461,0,155
+1793036931136,445,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-2,text,true,,4761,140,3,3,https://blazedemo.com/,444,0,140
+1793036931275,531,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-3,text,true,,4757,140,4,4,https://blazedemo.com/,530,0,226
+1793036931431,443,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-4,text,true,,4761,140,3,3,https://blazedemo.com/,441,0,153
+1793036931586,441,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-5,text,true,,4761,140,4,4,https://blazedemo.com/,439,0,144
+1793036931725,436,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-6,text,true,,4757,140,3,3,https://blazedemo.com/,435,0,155
+1793036931880,464,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-7,text,true,,4761,140,4,4,https://blazedemo.com/,463,0,142
+1793036932022,436,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-8,text,true,,4761,140,3,3,https://blazedemo.com/,434,0,145
+1793036932179,488,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-9,text,true,,4757,140,4,4,https://blazedemo.com/,487,0,150
+1793036932333,453,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-10,text,true,,4757,140,4,4,https://blazedemo.com/,452,0,143
+1793036932472,465,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-11,text,true,,4757,140,4,4,https://blazedemo.com/,464,0,146
+1793036932628,406,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-12,text,true,,4761,140,3,3,https://blazedemo.com/,405,0,154
+1793036932780,431,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-13,text,true,,4757,140,3,3,https://blazedemo.com/,430,0,152
+1793036932928,457,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-14,text,true,,4761,140,4,4,https://blazedemo.com/,456,0,164
+1793036933076,447,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-15,text,true,,4757,140,3,3,https://blazedemo.com/,446,0,142
+1793036933238,433,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-16,text,true,,4761,140,3,3,https://blazedemo.com/,432,0,140
+1793036933378,457,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-17,text,true,,4757,140,4,4,https://blazedemo.com/,456,0,175
+1793036933532,437,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-18,text,true,,4761,140,3,3,https://blazedemo.com/,434,0,145
+1793036933685,380,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-19,text,true,,4761,140,3,3,https://blazedemo.com/,377,0,137
+1793036933825,403,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-20,text,true,,4757,140,3,3,https://blazedemo.com/,402,0,146
+1793036933995,449,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-21,text,true,,4757,140,4,4,https://blazedemo.com/,444,0,140
+1793036934122,428,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-22,text,true,,4757,140,3,3,https://blazedemo.com/,427,0,142
+1793036934285,527,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-23,text,true,,4757,140,4,4,https://blazedemo.com/,525,0,237
+1793036934433,409,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-24,text,true,,4757,140,3,3,https://blazedemo.com/,408,0,151
+1793036934584,409,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-25,text,true,,4761,140,3,3,https://blazedemo.com/,408,0,133
+1793036934725,432,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-26,text,true,,4757,140,3,3,https://blazedemo.com/,431,0,147
+1793036934879,435,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-27,text,true,,4757,140,3,3,https://blazedemo.com/,435,0,141
+1793036935034,432,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-28,text,true,,4757,140,3,3,https://blazedemo.com/,431,0,142
+1793036935175,412,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-29,text,true,,4757,140,3,3,https://blazedemo.com/,411,0,135
+1793036935335,477,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-30,text,true,,4757,140,4,4,https://blazedemo.com/,472,0,150
+1793036935484,492,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-31,text,true,,4757,140,4,4,https://blazedemo.com/,491,0,181
+1793036935631,428,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-32,text,true,,4757,140,3,3,https://blazedemo.com/,423,0,144
+1793036935771,450,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-33,text,true,,4757,140,4,4,https://blazedemo.com/,448,0,138
+1793036935924,423,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-34,text,true,,4757,140,3,3,https://blazedemo.com/,421,0,136
+1793036936081,409,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-35,text,true,,4757,140,3,3,https://blazedemo.com/,408,0,134
+1793036936220,412,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-36,text,true,,4757,140,3,3,https://blazedemo.com/,411,0,140
+1793036936374,430,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-37,text,true,,4757,140,3,3,https://blazedemo.com/,427,0,136
+1793036936535,449,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-38,text,true,,4757,140,4,4,https://blazedemo.com/,448,0,141
+1793036936675,417,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-39,text,true,,4757,140,3,3,https://blazedemo.com/,415,0,134
+1793036936825,428,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-40,text,true,,4757,140,3,3,https://blazedemo.com/,426,0,135
+1793036936985,434,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-41,text,true,,4757,140,3,3,https://blazedemo.com/,433,0,133
+1793036937120,436,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-42,text,true,,4757,140,3,3,https://blazedemo.com/,434,0,138
+1793036937274,416,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-43,text,true,,4757,140,3,3,https://blazedemo.com/,415,0,135
+1793036937430,447,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-44,text,true,,4761,140,3,3,https://blazedemo.com/,446,0,132
+1793036937568,442,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-45,text,true,,4761,140,3,3,https://blazedemo.com/,440,0,129
+1793036937725,449,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-46,text,true,,4757,140,4,4,https://blazedemo.com/,446,0,138
+1793036937880,452,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-47,text,true,,4761,140,3,3,https://blazedemo.com/,451,0,131
+1793036938034,425,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-48,text,true,,4757,140,3,3,https://blazedemo.com/,422,0,131
+1793036938177,420,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-49,text,true,,4757,140,3,3,https://blazedemo.com/,419,0,137
+1793036938337,434,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-50,text,true,,4757,140,3,3,https://blazedemo.com/,431,0,135
+1793036938471,456,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-51,text,true,,4757,140,4,4,https://blazedemo.com/,453,0,136
+1793036938628,597,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-52,text,true,,4757,140,4,4,https://blazedemo.com/,596,0,184
+1793036938926,432,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-54,text,true,,4757,140,4,4,https://blazedemo.com/,430,0,157
+1793036938788,622,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-53,text,true,,4761,140,4,4,https://blazedemo.com/,597,0,254
+1793036939080,445,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-55,text,true,,4757,140,4,4,https://blazedemo.com/,443,0,141
+1793036939232,422,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-56,text,true,,4757,140,3,3,https://blazedemo.com/,419,0,139
+1793036939372,382,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-57,text,true,,4757,140,3,3,https://blazedemo.com/,382,0,142
+1793036939525,443,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-58,text,true,,4757,140,3,3,https://blazedemo.com/,440,0,136
+1793036939683,476,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-59,text,true,,4757,140,4,4,https://blazedemo.com/,474,0,146
+1793036939825,444,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-60,text,true,,4757,140,3,3,https://blazedemo.com/,443,0,146
+1793036939979,436,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-61,text,true,,4757,140,3,3,https://blazedemo.com/,431,0,132
+1793036940133,429,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-62,text,true,,4761,140,3,3,https://blazedemo.com/,428,0,141
+1793036940274,435,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-63,text,true,,4757,140,3,3,https://blazedemo.com/,434,0,138
+1793036940430,420,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-64,text,true,,4757,140,3,3,https://blazedemo.com/,419,0,136
+1793036940585,423,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-65,text,true,,4757,140,3,3,https://blazedemo.com/,421,0,132
+1793036940725,417,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-66,text,true,,4757,140,3,3,https://blazedemo.com/,416,0,138
+1793036940885,437,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-67,text,true,,4757,140,3,3,https://blazedemo.com/,434,0,137
+1793036941021,420,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-68,text,true,,4757,140,3,3,https://blazedemo.com/,419,0,141
+1793036941177,430,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-69,text,true,,4757,140,3,3,https://blazedemo.com/,427,0,138
+1793036941331,423,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-70,text,true,,4757,140,3,3,https://blazedemo.com/,421,0,131
+1793036941478,391,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-71,text,true,,4757,140,3,3,https://blazedemo.com/,391,0,131
+1793036941632,399,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-72,text,true,,4761,140,3,3,https://blazedemo.com/,398,0,131
+1793036941785,416,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-73,text,true,,4757,140,3,3,https://blazedemo.com/,415,0,135
+1793036941929,508,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-74,text,true,,4757,140,4,4,https://blazedemo.com/,504,0,136
+1793036942078,433,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-75,text,true,,4761,140,3,3,https://blazedemo.com/,431,0,139
+1793036942231,478,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-76,text,true,,4761,140,4,4,https://blazedemo.com/,473,0,134
+1793036942387,434,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-77,text,true,,4757,140,3,3,https://blazedemo.com/,434,0,142
+1793036942528,479,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-78,text,true,,4757,140,4,4,https://blazedemo.com/,476,0,138
+1793036942683,411,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-79,text,true,,4757,140,3,3,https://blazedemo.com/,408,0,131
+1793036942837,431,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-80,text,true,,4761,140,3,3,https://blazedemo.com/,428,0,133
+1793036942978,506,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-81,text,true,,4757,140,4,4,https://blazedemo.com/,503,0,184
+1793036943136,401,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-82,text,true,,4757,140,3,3,https://blazedemo.com/,400,0,136
+1793036943275,396,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-83,text,true,,4757,140,3,3,https://blazedemo.com/,396,0,128
+1793036943430,455,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-84,text,true,,4757,140,4,4,https://blazedemo.com/,454,0,132
+1793036943586,454,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-85,text,true,,4761,140,4,4,https://blazedemo.com/,451,0,138
+1793036943724,414,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-86,text,true,,4757,140,3,3,https://blazedemo.com/,413,0,145
+1793036943876,396,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-87,text,true,,4761,140,3,3,https://blazedemo.com/,392,0,134
+1793036944038,398,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-88,text,true,,4757,140,3,3,https://blazedemo.com/,396,0,136
+1793036944184,405,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-89,text,true,,4761,140,3,3,https://blazedemo.com/,403,0,144
+1793036944326,412,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-90,text,true,,4761,140,3,3,https://blazedemo.com/,412,0,131
+1793036944479,439,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-91,text,true,,4757,140,3,3,https://blazedemo.com/,437,0,141
+1793036944625,439,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-92,text,true,,4761,140,3,3,https://blazedemo.com/,439,0,139
+1793036944787,520,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-93,text,true,,4757,140,4,4,https://blazedemo.com/,516,0,135
+1793036944936,460,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-94,text,true,,4757,140,4,4,https://blazedemo.com/,459,0,150
+1793036945075,425,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-95,text,true,,4757,140,3,3,https://blazedemo.com/,424,0,140
+1793036945250,440,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-96,text,true,,4757,140,4,4,https://blazedemo.com/,439,0,139
+1793036945373,419,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-97,text,true,,4757,140,3,3,https://blazedemo.com/,414,0,132
+1793036945519,456,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-98,text,true,,4757,140,3,3,https://blazedemo.com/,454,0,145
+1793036945673,390,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-99,text,true,,4757,140,2,2,https://blazedemo.com/,386,0,137
+1793036945829,441,Homepage - during load,200,OK,2. During load - 1000 users in 15 seconds 2-100,text,true,,4757,140,1,1,https://blazedemo.com/,441,0,136
+1793036947290,455,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,454,0,135
+1793036948751,338,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,335,0,0
+1793036950094,268,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,265,0,0
+1793036951371,265,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,265,0,0
+1793036952643,259,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,255,0,0
+1793036953910,316,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,313,0,0
+1793036955233,278,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,274,0,0
+1793036956526,283,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,276,0,0
+1793036957819,278,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4757,140,1,1,https://blazedemo.com/,273,0,0
+1793036959099,291,Homepage - after load,200,OK,"3. After load - 1 user, 10 visits 3-1",text,true,,4761,140,1,1,https://blazedemo.com/,285,0,0
